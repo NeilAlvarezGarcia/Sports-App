@@ -1,25 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import Login from './auth/Login';
+import OnBoarding from './auth/OnBoarding';
+import SignUp from './auth/SignUp';
+import { Container } from './components/Container';
+import { UseContext } from './contextApi/ContextApi';
+import ForgotPassword from './auth/ForgotPassword';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
+  const {mode} = UseContext();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container mode={mode}>
+      <Router>
+        <Routes>
+            <Route path='/' element={<OnBoarding/>}/>
+            <Route path='/*' element={<PrivateRoute/>}/>
+            <Route path='/login' element={<Login/>}/>
+            <Route path='/sign-up' element={<SignUp/>}/>
+            <Route path='/forgot-password' element={<ForgotPassword/>}/>
+        </Routes>
+      </Router>
+    </Container>
   );
 }
 
