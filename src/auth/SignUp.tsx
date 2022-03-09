@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ButtonComponent } from '../components/Button'
-import { PropMode } from '../components/Container'
+import { ContainerSecondary, PropMode } from '../components/Containers'
 import { Error as ErrorComponent} from '../components/Error'
 import { UseContext } from '../contextApi/ContextApi'
 import { auth, signUp } from '../firebase-files/authentication'
@@ -60,7 +60,7 @@ const SignUp = () => {
       
   return (
     <ContainerLogin mode={mode}>
-        <div className="container">
+        <ContainerSecondary>
         
             <div className="header">
                 <h1>Sign Up</h1>
@@ -81,10 +81,10 @@ const SignUp = () => {
                     Verify Password
                     <input type="password" id='passwordConfirm' value={formState.passwordConfirmation} onChange={handleChange} name='passwordConfirmation' required/>
                 </label>
-                <p>Have already an account?<Link to='/login'> Login</Link></p>
+                <p className='link'>Have already an account?<Link to='/login'> Login</Link></p>
                 <ButtonComponent type='submit' disabled={loading}>Sign up</ButtonComponent>
             </form>
-        </div>
+        </ContainerSecondary>
     </ContainerLogin>
   )
 }

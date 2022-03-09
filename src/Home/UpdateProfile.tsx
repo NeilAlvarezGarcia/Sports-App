@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import BackButton from '../components/BackButton'
 import { ButtonComponent } from '../components/Button'
-import { PropMode } from '../components/Container'
-import { ContainerCenter } from '../components/ContainerCenter'
-import { Error as ErrorComponent} from '../components/Error'
+import { PropMode } from '../components/Containers'
+import { ContainerCenter } from '../components/Containers'
+import Message from '../components/Message'
 import { UseContext } from '../contextApi/ContextApi'
 import { updateUserProfile } from '../firebase-files/authentication'
 import { getExtraUserInformation, sendExtraUserInformation } from '../firebase-files/firestore'
@@ -36,14 +36,12 @@ const SignUp = () => {
     const {displayName, email} = user;
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string>('');
+    const [message, setMessage] = useState<string>('');
     const [extraData, setExtraData] = useState<typeExtraData>();
     const [formState, setFormState] = useState<typeForm>({});
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setError('');
-
         const {value, files, name} = e.target;
         const newValue = name === 'photoURL' ? files?.[0] : value;
 
@@ -101,7 +99,8 @@ const SignUp = () => {
         }
 
         setLoading(false);
-        navigate('/profile');
+        setMessage('Profile updated');
+        setTimeout(() =>navigate('/profile'), 3000);
     }
 
     useEffect(() => {
@@ -117,7 +116,7 @@ const SignUp = () => {
         setData();
         document.title = 'GreenRun Sports - Edit Profile';
     }, [displayName, email, extraData?.location, extraData?.phoneNumber, user])
-      
+
   return (
     <ContainerCenter>
         <BackButton/>
@@ -126,7 +125,7 @@ const SignUp = () => {
                 <h1>Edit Profile</h1>
             </div>
 
-            {error && <ErrorComponent>{error}</ErrorComponent>}
+            {message && <Message text={message}/>}
             <form onSubmit={handleSubmit}>
                 <label htmlFor="photo">
                     Photo Profile

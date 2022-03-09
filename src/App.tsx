@@ -3,7 +3,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Login from './auth/Login';
 import OnBoarding from './auth/OnBoarding';
 import SignUp from './auth/SignUp';
-import { Container } from './components/Container';
+import { MainContainer } from './components/Containers';
 import { UseContext } from './contextApi/ContextApi';
 import ForgotPassword from './auth/ForgotPassword';
 import PrivateRoute from './components/PrivateRoute';
@@ -12,7 +12,7 @@ function App() {
   const {mode} = UseContext();
 
   return (
-    <Container mode={mode}>
+    <MainContainer mode={mode}>
       <Router>
         <Routes>
             <Route path='/' element={<OnBoarding/>}/>
@@ -22,7 +22,7 @@ function App() {
             <Route path='/forgot-password' element={<ForgotPassword/>}/>
         </Routes>
       </Router>
-    </Container>
+    </MainContainer>
   );
 }
 

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ButtonComponent } from '../components/Button'
-import { PropMode } from '../components/Container'
+import { ContainerSecondary, PropMode } from '../components/Containers'
 import { Error } from '../components/Error'
 import { UseContext } from '../contextApi/ContextApi'
 import { auth, login } from '../firebase-files/authentication'
@@ -50,8 +50,7 @@ const Login = () => {
       
   return (
     <ContainerLogin mode={mode}>
-        <div className="container">
-        
+        <ContainerSecondary>
             <div className="header">
                 <h1>Welcome</h1>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -68,10 +67,10 @@ const Login = () => {
                     <input type="password" id='password' value={formState.password} onChange={handleChange} name='password' required/>
                 </label>
                 <Link to='/forgot-password'>Forget Password?</Link>
-                <p>Don´t have an account?<Link to='/sign-up'> Sign up</Link></p>
+                <p className='link'>Don´t have an account?<Link to='/sign-up'> Sign up</Link></p>
                 <ButtonComponent type='submit' disabled={loading}>Login</ButtonComponent>
             </form>
-        </div>
+        </ContainerSecondary>
     </ContainerLogin>
   )
 }
@@ -84,26 +83,7 @@ const ContainerLogin = styled.div<PropMode>`
     justify-content: center;
     align-items: center;
     color:  ${prop => prop.mode === 'light'? '#000' : '#fff'};
-
-    .container {
-        width: 90%;
-    }
     
-    .header {
-        text-align: center;
-
-        h1 {
-            font-size: 4.2rem;
-            margin: 1rem 0;
-        }
-        p {
-            font-size: 1.8rem;
-            line-height: 148.02%;
-            padding: 0 2rem;
-            margin-bottom: 2rem;
-        }
-    }
-
     label {
         display: flex;
         flex-direction: column;

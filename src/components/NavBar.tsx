@@ -4,7 +4,7 @@ import { faClipboardList, faClock, faHome } from '@fortawesome/free-solid-svg-ic
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { UseContext } from '../contextApi/ContextApi'
-import { PropMode } from './Container'
+import { PropMode } from './Containers'
 import UserPortrait from './UserPortrait'
 
 const NavBar = () => {

@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ButtonComponent } from '../components/Button'
-import { PropMode } from '../components/Container'
+import { ContainerSecondary, PropMode } from '../components/Containers'
 import { Error as ErrorComponent } from '../components/Error'
+import Message from '../components/Message'
 import { UseContext } from '../contextApi/ContextApi'
 import { forgotPassword } from '../firebase-files/authentication'
 
@@ -51,29 +52,25 @@ const Login = () => {
       
   return (
     <ContainerLogin mode={mode}>
-        <div className="container">
+        <ContainerSecondary>
         
             <div className="header">
                 <h1>Forget Password</h1>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
 
-            {message && (
-                <div className='message'>
-                    <p>{message}</p>
-                </div>
-            )}
+            {message && <Message text={message}/>}
             {error && <ErrorComponent>{error}</ErrorComponent>}
             <form onSubmit={handleSubmit}>
                 <label htmlFor="email">
                     User
                     <input type="email" id='email' value={email} onChange={handleChange} required/>
                 </label>
-                <p>Have already an account?<Link to='/login'> Login</Link></p>
+                <p className='link'>Have already an account?<Link to='/login'> Login</Link></p>
 
                 <ButtonComponent type='submit' disabled={loading}>Send email</ButtonComponent>
             </form>
-        </div>
+        </ContainerSecondary>
     </ContainerLogin>
   )
 }
