@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import BackButton from '../components/BackButton'
@@ -8,12 +8,15 @@ import { ContainerCenter } from '../components/ContainerCenter'
 import UserPortrait from '../components/UserPortrait'
 import { UseContext } from '../contextApi/ContextApi'
 import { logout } from '../firebase-files/authentication'
+import { getExtraUserInformation } from '../firebase-files/firestore'
+import { typeExtraData } from './UpdateProfile'
 
 const Profile = () => {
     const {user, mode} = UseContext();
     const navigate = useNavigate();
-    const {displayName, email, phoneNumber, location} = user;
-    console.log(user)
+    const {displayName, email} = user;
+    const [extraData, setExtraData] = useState<typeExtraData>();
+    const [loading, setLoading] = useState<boolean>(true);
 
     const handleLogOut = async () => {
         await logout()
@@ -21,37 +24,50 @@ const Profile = () => {
         navigate('/');
     }
 
-  return (
-    <ContainerCenter>
-        <BackButton/>
-        <ContainerProfile mode={mode}>
-            <UserPortrait width='10rem' height='10rem'/>
+    useEffect(() => {
+        const setData = async () => {
+            await setExtraData(await getExtraUserInformation(user.uid));
+            setLoading(false);
+        }
+        setData();
+        document.title = 'GreenRun Sports - Profile';
+    }, [user])
 
-            <div className="information">
-                <p>
-                    Name:
-                    <span>{displayName}</span>
-                </p>
-                <p>
-                    Email:
-                    <span>{email}</span>
-                </p>
-                <p>
-                    phoneNumber:
-                    <span>{phoneNumber}</span>
-                </p>
-                <p>
-                    Location:
-                    <span>{location}</span>
-                </p>
-            </div>
-            <Link to='/update-profile'>
-                <ButtonComponent style={{marginRight: '2rem'}}>Edit Profile</ButtonComponent>
-            </Link>
-            <ButtonComponent onClick={handleLogOut}>Log Out</ButtonComponent>
-        </ContainerProfile>
-    </ContainerCenter>
-  )
+    return (
+        <ContainerCenter>
+            {!loading && (
+                <>
+                    <BackButton/>
+                    <ContainerProfile mode={mode}>
+                        <UserPortrait width='10rem' height='10rem'/>
+
+                        <div className="information">
+                            <p>
+                                Name:
+                                <span>{displayName}</span>
+                            </p>
+                            <p>
+                                Email:
+                                <span>{email}</span>
+                            </p>
+                            <p>
+                                phoneNumber:
+                                <span>{extraData?.phoneNumber}</span>
+                            </p>
+                            <p className='location'>
+                                Location:
+                                <span>{extraData?.location}</span>
+                            </p>
+                        </div>
+                        <Link to='/update-profile'>
+                            <ButtonComponent style={{marginRight: '2rem'}}>Edit Profile</ButtonComponent>
+                        </Link>
+                        <ButtonComponent onClick={handleLogOut}>Log Out</ButtonComponent>
+                    </ContainerProfile>
+                </>
+            )}
+        </ContainerCenter>
+    )
 }
 
 const ContainerProfile = styled.div<PropMode>`
@@ -79,6 +95,9 @@ const ContainerProfile = styled.div<PropMode>`
                 font-size: 1.7rem;
                 margin-top: .5rem;
             }
+        }
+        .location {
+            text-transform: capitalize;
         }
     }
 `;

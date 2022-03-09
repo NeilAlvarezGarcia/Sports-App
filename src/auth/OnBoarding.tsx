@@ -13,7 +13,7 @@ const OnBoarding = () => {
   const {mode} = UseContext();
   
   useEffect(() => {
-    document.title = document.title + ' - OnBoarding';
+    document.title = 'GreenRun Sports - OnBoarding';
     return onAuthStateChanged(auth, (user) => {
         if(user)  navigate('/home');
     });

@@ -1,3 +1,4 @@
+import { updateEmail, updatePassword } from 'firebase/auth'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -7,44 +8,115 @@ import { PropMode } from '../components/Container'
 import { ContainerCenter } from '../components/ContainerCenter'
 import { Error as ErrorComponent} from '../components/Error'
 import { UseContext } from '../contextApi/ContextApi'
+import { updateUserProfile } from '../firebase-files/authentication'
+import { getExtraUserInformation, sendExtraUserInformation } from '../firebase-files/firestore'
+import { uploadImageProfile} from '../firebase-files/storage'
+
+interface typeForm {
+    email?: string,
+    password?: string,
+    passwordConfirmation?: string,
+    location?: string,
+    photoURL?: File
+    phoneNumber?: string,
+    name?: string
+}
+export interface typeExtraData {
+    phoneNumber?: string,
+    location?: string,
+    userId?: string
+}
+export interface typeDataUpdate  {
+    displayName?: string,
+    photoURL?: string
+}
 
 const SignUp = () => {
-    const {mode} = UseContext();
+    const {mode, user} = UseContext();
+    const {displayName, email} = user;
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
-    const [formState, setFormState] = useState({
-        email: '',
-        password: '',
-        passwordConfirmation: ''
-    });
+    const [extraData, setExtraData] = useState<typeExtraData>();
+    const [formState, setFormState] = useState<typeForm>({});
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setError('');
 
+        const {value, files, name} = e.target;
+        const newValue = name === 'photoURL' ? files?.[0] : value;
+
         setFormState(prevState => ({
             ...prevState,
-            [e.target.name]: e.target.value
+            [name]: newValue
         }))
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const regexPassword = /^.{4,12}$/;
-
-        if(!regexPassword.test(formState.passwordConfirmation)) {
-            return setError('Length of the password wrong');
-        } else if(formState.password !== formState.passwordConfirmation) return setError('The passwords must match each other.')
-
         setLoading(true);
-        
+
+        let updateData: typeDataUpdate = {}
+        let updateExtraData: typeExtraData = {
+            userId: user.uid
+        }
+
+        if(formState.email) {
+            if(formState.email !== user.email) {
+                updateEmail(user, formState.email);
+            }
+        }
+        if(formState.password && formState.passwordConfirmation) {
+            if(formState.password === formState.passwordConfirmation) {
+                updatePassword(user, formState.password);
+            }
+        }
+        if(formState.photoURL) {
+            if(/\.(jpg|jpeg|png|svg)/g.test(formState.photoURL.name)) {
+                const path = `/files/${user.uid}/image-profile`;
+                uploadImageProfile(path, formState.photoURL);
+            }
+        }
+        if(formState.phoneNumber) {
+            if(/[0-9]{10}/.test(formState.phoneNumber)) {
+                updateExtraData.phoneNumber = formState.phoneNumber;
+            }
+        }
+        if(formState.name) {
+            if(/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(formState.name)) {
+                updateData.displayName = formState.name;
+                updateUserProfile(updateData);
+            }
+        }
+        if(formState.location) {
+            if(/^[a-zA-ZÀ-ÿ\s]{5,50}/.test(formState.location)) {
+                updateExtraData.location = formState.location;
+            }
+        }
+
+        if(updateExtraData.location || updateExtraData.phoneNumber) {
+            sendExtraUserInformation(user.uid, updateExtraData);
+        }
+
         setLoading(false);
+        navigate('/profile');
     }
 
     useEffect(() => {
-        document.title = document.title + ' - SignUp';
-    }, [navigate])
+        const setData = async () => {
+            await setExtraData(await getExtraUserInformation(user.uid));
+            setFormState({
+                email: email, 
+                name: displayName,
+                phoneNumber: extraData?.phoneNumber,
+                location: extraData?.location,
+            })
+        }
+        setData();
+        document.title = 'GreenRun Sports - Edit Profile';
+    }, [displayName, email, extraData?.location, extraData?.phoneNumber, user])
       
   return (
     <ContainerCenter>
@@ -58,8 +130,12 @@ const SignUp = () => {
             <form onSubmit={handleSubmit}>
                 <label htmlFor="photo">
                     Photo Profile
-                    <input type="file" id='photo' className='file'/>
-                    <span></span>
+                    <input type="file" id='photo' className='file' onChange={handleChange} name='photoURL'/>
+                    <span>{formState?.photoURL?.name}</span>
+                </label>
+                <label htmlFor="name">
+                    Name
+                    <input type="text" id='name' autoComplete='off' value={formState.name} onChange={handleChange} name='name'/>
                 </label>
                 <label htmlFor="email">
                     Email
@@ -67,11 +143,11 @@ const SignUp = () => {
                 </label>
                 <label htmlFor="phone">
                     Phone Number
-                    <input type="phone" id='phone' autoComplete='off'/>
+                    <input type="phone" id='phone' autoComplete='off' value={formState.phoneNumber} onChange={handleChange} name='phoneNumber'/>
                 </label>
                 <label htmlFor="location">
                     Location
-                    <input type="text" id='location' autoComplete='off'/>
+                    <input type="text" id='location' autoComplete='off' value={formState.location} onChange={handleChange} name='location'/>
                 </label>
                 <label htmlFor="password">
                     Password
@@ -114,6 +190,13 @@ const ContainerLogin = styled.div<PropMode>`
         font-size: 1.4rem;
         &:last-of-type {
             margin-bottom: 3rem;
+        }
+        span {
+            margin-top: .5rem;
+            font-size: 1.8rem;
+        }
+        span, input {
+            color: ${prop => prop.mode === 'light'? '#000' : '#fff'};
         }
         input {
             background-color: ${prop => prop.mode === 'light'? '#fff' : '#2F2F43'};

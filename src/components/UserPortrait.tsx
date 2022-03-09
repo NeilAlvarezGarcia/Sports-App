@@ -45,7 +45,6 @@ const Profile = styled.div<divProp>`
     }
     img {
         object-fit: cover;
-        min-width: 110%;
     }
 
 `;

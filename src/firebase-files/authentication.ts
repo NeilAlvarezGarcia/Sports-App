@@ -1,4 +1,5 @@
-import { createUserWithEmailAndPassword, getAuth, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { typeDataUpdate } from "../Home/UpdateProfile";
 
 export const auth = getAuth();
 
@@ -44,4 +45,10 @@ export async function forgotPassword(email:string) {
 
 export async function logout() {
     await signOut(auth);
+}
+
+export async function updateUserProfile(profileData: typeDataUpdate) {
+    if(auth.currentUser) {
+        updateProfile(auth.currentUser, profileData);            
+    }
 }

@@ -46,7 +46,7 @@ const Login = () => {
     }
 
     useEffect(() => {
-        document.title = document.title + ' - Forget Password';
+        document.title = 'GreenRun Sports - Forget Password';
     }, [])
       
   return (

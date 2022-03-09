@@ -51,7 +51,7 @@ const SignUp = () => {
     }
 
     useEffect(() => {
-        document.title = document.title + ' - SignUp';
+        document.title = 'GreenRun Sports - SignUp';
 
         return onAuthStateChanged(auth, (user) => {
             if(user)  navigate('/home');

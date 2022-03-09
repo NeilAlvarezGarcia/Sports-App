@@ -42,7 +42,7 @@ const Login = () => {
     }
 
     useEffect(() => {
-        document.title = document.title + ' - Login';
+        document.title = 'GreenRun Sports - Login';
         return onAuthStateChanged(auth, (user) => {
             if(user)  navigate('/home');
         });
