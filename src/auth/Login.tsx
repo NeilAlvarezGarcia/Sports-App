@@ -1,9 +1,8 @@
 import { onAuthStateChanged } from 'firebase/auth'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
 import { ButtonComponent } from '../components/Button'
-import { ContainerSecondary, PropMode } from '../components/Containers'
+import { ContainerAuthentication, ContainerSecondary } from '../components/Containers'
 import { Error } from '../components/Error'
 import { UseContext } from '../contextApi/ContextApi'
 import { auth, login } from '../firebase-files/authentication'
@@ -49,7 +48,7 @@ const Login = () => {
     }, [navigate])
       
   return (
-    <ContainerLogin mode={mode}>
+    <ContainerAuthentication mode={mode}>
         <ContainerSecondary>
             <div className="header">
                 <h1>Welcome</h1>
@@ -71,45 +70,8 @@ const Login = () => {
                 <ButtonComponent type='submit' disabled={loading}>Login</ButtonComponent>
             </form>
         </ContainerSecondary>
-    </ContainerLogin>
+    </ContainerAuthentication>
   )
 }
-
-const ContainerLogin = styled.div<PropMode>`
-    background-color: ${prop => prop.mode === 'light'? '#E5E5E5' : 'inherit'};
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color:  ${prop => prop.mode === 'light'? '#000' : '#fff'};
-    
-    label {
-        display: flex;
-        flex-direction: column;
-        background-color: ${prop => prop.mode === 'light'? '#fff' : '#2F2F43'};
-        padding: 1rem 2rem;
-        margin-bottom: 1rem;
-        border-radius: 1.5rem;
-        font-size: 1.4rem;
-        
-        input {
-            background-color: ${prop => prop.mode === 'light'? '#fff' : '#2F2F43'};
-            margin-top: 1rem;
-            font-size: 1.8rem;
-        }
-    }
-    form p {
-        margin: 1rem 0  5rem;
-        a {
-            color: #564D9E;
-        }
-    }
-    a, button, p, label, input {
-        color: ${prop => prop.mode === 'light'? '#232232' : '#FEFEFE'};
-        border: none;
-        outline: none;
-    }
-`;
 
 export default Login
