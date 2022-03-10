@@ -27,6 +27,8 @@ interface divProp {
 const Profile = styled.div<divProp>`
     overflow: hidden;
     border-radius: 50%;
+    max-width: 100%;
+    min-width: 100%;
     max-height: 100%;
     min-height: 100%;
     display: flex;

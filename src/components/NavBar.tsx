@@ -36,24 +36,26 @@ const NavBar = () => {
 
 const Nav = styled.nav<PropMode>`
     background-color: ${prop => prop.mode === 'light'? '#fff' : '#2C2B3E'};
-    padding: 0 1rem;
-    margin: 2rem auto;
-    border-radius: 24px;
-    height: 8.5rem;
+    padding: 0 1.2rem;
+    border-radius: 2rem;
+    height: 7rem;
     width: 90%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.7rem;
+    font-size: 1.5rem;
 
     a { 
-        width: 18%;
-        max-height: 100%;
+        width: 4.5rem;
+        height: 4.5rem;
         color: ${prop => prop.mode === 'light'? '#E5E5E5' : '#181828'};
         display: flex;
         place-content: center;
-        padding: 2rem 0;
-        border-radius: 1.5rem;
+        place-items: center;
+        border-radius: 1.2rem;
+    }
+    span {
+        font-size: 2.5rem;
     }
 `
 
