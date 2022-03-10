@@ -17,8 +17,12 @@ const BackButton = () => {
 }
 
 const ArrowButton = styled(Link)<PropMode>`
-    color: ${prop => prop.mode === 'light' ? '#232232' : '#fff'};
-    font-size: 3.5rem;
+  color: ${prop => prop.mode === 'light' ? '#232232' : '#fff'};
+  font-size: 2rem;
+  
+  @media (min-width: 500px) {
+    font-size: 3rem;
+  }
 `;
 
 export default BackButton

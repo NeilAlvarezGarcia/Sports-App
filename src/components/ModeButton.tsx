@@ -26,12 +26,18 @@ const Button = styled.button<PropMode>`
     top: 3rem;
     left: 2.5rem;
     z-index: 3;
-    width: 6rem;
-    height: 6rem;
+    width: 4.5rem;
+    height: 4.5rem;
     cursor: pointer;
-    border-radius: 1.8rem;
+    border-radius: 1.5rem;
     font-size: 2.5rem;
     background-color: ${prop => prop.mode === 'light'? '#fff' : '#2C2B3E'};
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+
+    @media (min-width: 756px) {
+      width: 5rem;
+      height: 5rem;
+    }
 `;
 
 const Icon = styled(FontAwesomeIcon)`

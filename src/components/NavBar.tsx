@@ -28,7 +28,7 @@ const NavBar = () => {
             <FontAwesomeIcon icon={faClipboardList}/>
         </NavLink>
         <NavLink to='/profile'>
-            <UserPortrait width='4rem' height='4rem'/>
+            <UserPortrait/>
         </NavLink>
     </Nav>
   )
@@ -39,6 +39,7 @@ const Nav = styled.nav<PropMode>`
     padding: 0 1rem;
     margin: 2rem auto;
     border-radius: 24px;
+    height: 8.5rem;
     width: 90%;
     display: flex;
     justify-content: space-between;
@@ -47,7 +48,7 @@ const Nav = styled.nav<PropMode>`
 
     a { 
         width: 18%;
-        height: 100%;
+        max-height: 100%;
         color: ${prop => prop.mode === 'light'? '#E5E5E5' : '#181828'};
         display: flex;
         place-content: center;

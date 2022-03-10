@@ -100,7 +100,8 @@ const SignUp = () => {
 
         setLoading(false);
         setMessage('Profile updated');
-        setTimeout(() =>navigate('/profile'), 3000);
+        const selectNavigation = () => window.innerWidth < 756 ? '/profile' : '/home';
+        setTimeout(() =>navigate(selectNavigation()), 3000);
     }
 
     useEffect(() => {
@@ -119,17 +120,20 @@ const SignUp = () => {
 
   return (
     <ContainerCenter>
-        <BackButton/>
-        <ContainerLogin mode={mode}>
+        <ContainerUpdate mode={mode}>
+            <div className='backButton'>
+                <BackButton/>
+            </div>
             <div className="header">
                 <h1>Edit Profile</h1>
             </div>
 
             {message && <Message text={message}/>}
+                
             <form onSubmit={handleSubmit}>
                 <label htmlFor="photo">
                     Photo Profile
-                    <input type="file" id='photo' className='file' onChange={handleChange} name='photoURL'/>
+                    <input type="file" id='photo' className='file' value='' onChange={handleChange} name='photoURL'/>
                     <span>{formState?.photoURL?.name}</span>
                 </label>
                 <label htmlFor="name">
@@ -158,23 +162,22 @@ const SignUp = () => {
                 </label>
                 <ButtonComponent type='submit' disabled={loading}>Edit Profile</ButtonComponent>
             </form>
-        </ContainerLogin>
+        </ContainerUpdate>
     </ContainerCenter>
   )
 }
 
-const ContainerLogin = styled.div<PropMode>`
-    background-color: ${prop => prop.mode === 'light'? '#E5E5E5' : 'inherit'};
-    height: 100%;
-    width: 100%;
-    color:  ${prop => prop.mode === 'light'? '#000' : '#fff'};
+const ContainerUpdate = styled.div<PropMode>`
+    width: min(95%, 50rem);
+    max-height: 100%;
     
     .header {
         text-align: center;
         margin-bottom: 2rem;
 
         h1 {
-            font-size: 3.2rem;
+            font-size: 2.5rem;
+            margin-top: 0;
         }
     }
 
@@ -182,13 +185,14 @@ const ContainerLogin = styled.div<PropMode>`
         display: flex;
         flex-direction: column;
         background-color: ${prop => prop.mode === 'light'? '#fff' : '#2F2F43'};
-        height: 6rem;
-        padding: 1rem 2rem;
+        color: ${prop => prop.mode === 'light'? '#aaa' : '#ddd'};
+        height: 5rem;
+        padding: .5rem 2rem;
         margin-bottom: 1rem;
-        border-radius: 1.5rem;
-        font-size: 1.4rem;
+        border-radius: 1rem;
+        font-size: 1.3rem;
         &:last-of-type {
-            margin-bottom: 3rem;
+            margin-bottom: 1.5rem;
         }
         span {
             margin-top: .5rem;
@@ -202,12 +206,24 @@ const ContainerLogin = styled.div<PropMode>`
             border: none;
             outline: none;
             margin-top: .5rem;
-            font-size: 1.8rem;
+            font-size: 1.7rem;
             &::placeholder {
                 font-size: 1.4rem;
             } 
         }
         .file {
+            display: none;
+        }
+
+    }
+    form {
+        height: 100rem;
+        overflow: auto;
+        padding-bottom: 70rem;
+    }
+
+    @media (min-width: 756px) {
+        .backButton {
             display: none;
         }
     }

@@ -23,9 +23,9 @@ const Home = () => {
 
 const ContainerHome = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: red;
 
   .first-container {
     flex: 1;
