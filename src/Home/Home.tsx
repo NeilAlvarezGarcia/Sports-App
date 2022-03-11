@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import Card from '../components/Card'
+import Card from '../components/CardHome'
 import { ContainerCards } from '../components/Containers'
 import ModeButton from '../components/ModeButton'
 import NavBar from '../components/NavBar'
@@ -43,11 +43,11 @@ const Home = () => {
       {!loading && (
         <>
           <ModeButton/>
-            <ContainerCards className='cards'>
-              {sports.map(sport => (
-                  <Card key={sport.idSport} sport={sport}/>
-              ))}
-            </ContainerCards>
+          <ContainerCards className='cards'>
+            {sports.map(sport => (
+                <Card key={sport.idSport} sport={sport}/>
+            ))}
+          </ContainerCards>
           <NavBar/>
         </>
       )}
@@ -55,7 +55,7 @@ const Home = () => {
   )
 }
 
-const ContainerHome = styled.div`
+export const ContainerHome = styled.div`
   height: 100%;
   padding-bottom: 2rem; 
   display: flex;
