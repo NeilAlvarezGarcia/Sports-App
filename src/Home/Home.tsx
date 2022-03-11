@@ -17,7 +17,6 @@ export interface typeSportData {
 
 const Home = () => {
   const [sports, setSports] = useState<typeSportData[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const fetchSportData = async () => {
     const URL = 'https://www.thesportsdb.com/api/v1/json/2/all_sports.php';
@@ -26,7 +25,6 @@ const Home = () => {
       const res = await axios.get(URL);
 
       setSports(res.data.sports);
-      setLoading(false);
     } catch(err) {
       console.log(err)
     }
@@ -40,27 +38,29 @@ const Home = () => {
 
   return (
     <ContainerHome>
-      {!loading && (
-        <>
+        <div className="top-container">
           <ModeButton/>
           <ContainerCards className='cards'>
             {sports.map(sport => (
                 <Card key={sport.idSport} sport={sport}/>
             ))}
           </ContainerCards>
-          <NavBar/>
-        </>
-      )}
+        </div>
+        <NavBar/>
     </ContainerHome>
   )
 }
 
 export const ContainerHome = styled.div`
   height: 100%;
-  padding-bottom: 2rem; 
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  .top-container {
+    flex: 2;
+    width: 100%;
+  }
 
   .cards {
     scroll-behavior: smooth;

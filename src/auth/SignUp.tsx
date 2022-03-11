@@ -70,15 +70,15 @@ const SignUp = () => {
             <form onSubmit={handleSubmit}>
                 <label htmlFor="email">
                     User
-                    <input type="email" id='email' autoComplete='off' value={formState.email} onChange={handleChange} name='email' required/>
+                    <input type="email" id='email' placeholder='example@gmail.com' autoComplete='off' value={formState.email} onChange={handleChange} name='email' required/>
                 </label>
                 <label htmlFor="password">
                     Password
-                    <input type="password" id='password' value={formState.password} onChange={handleChange} name='password' required/>
+                    <input type="password" id='password' placeholder='password123' value={formState.password} onChange={handleChange} name='password' required/>
                 </label>
                 <label htmlFor="passwordConfirm">
                     Verify Password
-                    <input type="password" id='passwordConfirm' value={formState.passwordConfirmation} onChange={handleChange} name='passwordConfirmation' required/>
+                    <input type="password" id='passwordConfirm' placeholder='password123' value={formState.passwordConfirmation} onChange={handleChange} name='passwordConfirmation' required/>
                 </label>
                 <p className='link'>Have already an account?<Link to='/login'> Login</Link></p>
                 <ButtonComponent type='submit' disabled={loading}>Sign up</ButtonComponent>
