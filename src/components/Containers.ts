@@ -96,6 +96,7 @@ export const ContainerCards = styled.div`
     height: 100%;
     width: 100%;
     display: flex;
-    overflow-x: hidden;
+    flex-direction: column;
+    overflow-y: auto;
     scrollbar-width: 0;
 `;

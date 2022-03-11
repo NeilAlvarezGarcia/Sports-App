@@ -59,12 +59,12 @@ export const ContainerHome = styled.div`
 
   .top-container {
     flex: 2;
+    overflow: hidden;
     width: 100%;
   }
 
   .cards {
-    scroll-behavior: smooth;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: y mandatory;
   }
 `;
 

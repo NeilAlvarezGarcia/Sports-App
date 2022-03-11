@@ -59,7 +59,7 @@ const Card: FC<Prop> = ({sport}) => {
 }
 
 const ContainerCard = styled.div<PropMode>`
-  min-width: 100%;
+  min-height: 100%;
   position: relative;
   scroll-snap-align:  center;
   scroll-snap-stop: always;
