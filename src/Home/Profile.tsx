@@ -8,14 +8,14 @@ import { ContainerCenter } from '../components/Containers'
 import UserPortrait from '../components/UserPortrait'
 import { UseContext } from '../contextApi/ContextApi'
 import { logout } from '../firebase-files/authentication'
-import { getExtraUserInformation } from '../firebase-files/firestore'
-import UpdateProfile, { typeExtraData } from './UpdateProfile'
+import { extraDataType, getExtraUserInformation } from '../firebase-files/firestore'
+import UpdateProfile from './UpdateProfile'
 
 const Profile = () => {
     const {user, mode} = UseContext();
     const navigate = useNavigate();
     const {displayName, email} = user;
-    const [extraData, setExtraData] = useState<typeExtraData>();
+    const [extraData, setExtraData] = useState<extraDataType>();
     const [loading, setLoading] = useState<boolean>(true);
 
     const handleLogOut = async () => {
@@ -55,7 +55,7 @@ const Profile = () => {
                                 </p>
                                 <p>
                                     phoneNumber:
-                                    <span>{extraData?.phoneNumber}</span>
+                                    <span>{extraData?.phone}</span>
                                 </p>
                                 <p className='location'>
                                     Location:
@@ -95,7 +95,6 @@ const RootContainer = styled.div`
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        gap: 4rem;
 
         .breakwindow {
             display: block;
@@ -136,8 +135,30 @@ const ContainerProfile = styled.div<PropMode>`
     }
 
     @media (min-width: 756px) {
+        .information {
+            p {
+                height: 6rem;
+                font-size: 1.4rem;
+                padding: 1rem 2rem;
+    
+                span {
+                    font-size: 1.9rem;
+                    margin-top: .5rem;
+                }
+            }
+        }
         .sendUpdateProfileButton {
             display: none;
+        }
+    }
+    @media (min-width: 900px) {
+        .information {
+            width: 90%;
+        }
+    }
+    @media (min-width: 1100px) {
+        .information {
+            width: 75%;
         }
     }
 `;

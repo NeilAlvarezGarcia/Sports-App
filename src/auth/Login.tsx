@@ -34,14 +34,15 @@ const Login = () => {
         setLoading(true);
         const res = await login(formState.email, formState.password);
         
+        setLoading(false);
         if(res) return setError(res.error);
 
-        setLoading(false);
         navigate('/home');
     }
 
     useEffect(() => {
         document.title = 'GreenRun Sports - Login';
+
         return onAuthStateChanged(auth, (user) => {
             if(user)  navigate('/home');
         });
@@ -65,8 +66,8 @@ const Login = () => {
                     Password
                     <input type="password" id='password' value={formState.password} onChange={handleChange} name='password' required/>
                 </label>
-                <Link to='/forgot-password'>Forget Password?</Link>
-                <p className='link'>Don´t have an account?<Link to='/sign-up'> Sign up</Link></p>
+                <Link to='/forgot-password' className='underline'>Forget Password?</Link>
+                <p className='link'>Don´t have an account?<Link to='/sign-up' className='underline'> Sign up</Link></p>
                 <ButtonComponent type='submit' disabled={loading}>Login</ButtonComponent>
             </form>
         </ContainerSecondary>

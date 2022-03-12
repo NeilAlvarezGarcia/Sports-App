@@ -1,5 +1,4 @@
 import { createUserWithEmailAndPassword, getAuth, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
-import { typeDataUpdate } from "../Home/UpdateProfile";
 
 export const auth = getAuth();
 
@@ -47,7 +46,12 @@ export async function logout() {
     await signOut(auth);
 }
 
-export async function updateUserProfile(profileData: typeDataUpdate) {
+interface typeDataUser {
+    displayName?: string,
+    photoURL?: string
+}
+
+export async function updateUserProfile(profileData: typeDataUser) {
     if(auth.currentUser) {
         updateProfile(auth.currentUser, profileData);            
     }

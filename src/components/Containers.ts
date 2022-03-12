@@ -46,7 +46,22 @@ export const ContainerAuthentication = styled.div<PropMode>`
         border: none;
         outline: none;
     }
-`
+    .underline:hover {
+        text-decoration: underline;
+    }
+
+    @media (min-width: 756px) {
+        label {
+        padding: 1rem 2rem;
+        border-radius: 1.5rem;
+        font-size: 1.5rem;
+        
+        input {
+            font-size: 1.9rem;
+        }
+    }
+    }
+`;
 
 export const ContainerSecondary = styled.div`
     width: min(85%, 40rem);
@@ -73,7 +88,7 @@ export const ContainerSecondary = styled.div`
     @media (min-width: 380px) {
         .header {
             h1 {
-                font-size: 4.2rem;
+                font-size: 3.5rem;
             }
             p {
                 font-size: 1.8rem;
@@ -96,7 +111,5 @@ export const ContainerCards = styled.div`
     height: 100%;
     width: 100%;
     display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    scrollbar-width: 0;
+    overflow-x: auto;
 `;

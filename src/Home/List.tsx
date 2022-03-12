@@ -36,8 +36,10 @@ const History = () => {
         <BackButton/>
 
         <div className="history-title">
-          <h1>History</h1>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          <h1>Sport List</h1>
+          <div className="buttons">
+              
+          </div>
         </div>
         <p className='lastUpdate'>{lastUpdate()}</p>
         <div className="historycards">
@@ -71,6 +73,7 @@ const ConatainerHistory = styled.div`
 
   .lastUpdate {
     margin: 1rem 0;
+    color: #c2c2c2;
     font-size: 1.3rem;
   }
 

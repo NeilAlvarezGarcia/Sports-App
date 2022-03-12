@@ -45,7 +45,6 @@ const SignUp = () => {
         } catch(err: any) {
             setError(err.message);
         }
-        
         setLoading(false);
     }
 
@@ -60,7 +59,6 @@ const SignUp = () => {
   return (
     <ContainerAuthentication mode={mode}>
         <ContainerSecondary>
-        
             <div className="header">
                 <h1>Sign Up</h1>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -80,7 +78,7 @@ const SignUp = () => {
                     Verify Password
                     <input type="password" id='passwordConfirm' placeholder='password123' value={formState.passwordConfirmation} onChange={handleChange} name='passwordConfirmation' required/>
                 </label>
-                <p className='link'>Have already an account?<Link to='/login'> Login</Link></p>
+                <p className='link'>Have already an account?<Link to='/login' className='underline'> Login</Link></p>
                 <ButtonComponent type='submit' disabled={loading}>Sign up</ButtonComponent>
             </form>
         </ContainerSecondary>

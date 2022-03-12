@@ -9,15 +9,16 @@ import { auth } from '../firebase-files/authentication';
 import messi from '../images/mess.png';
 
 const OnBoarding = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const {mode} = UseContext();
   
   useEffect(() => {
     document.title = 'GreenRun Sports - OnBoarding';
+    
     return onAuthStateChanged(auth, (user) => {
         if(user)  navigate('/home');
     });
-}, [navigate])
+  }, [navigate]);
 
   return (
     <Main mode={mode}>
@@ -64,11 +65,11 @@ const Main = styled.div <PropMode>`
         width: 90%;
 
         h1 {
-            font-size: 2rem;
+            font-size: 2.5rem;
             margin: 1rem  0;
         }
         p {
-            font-size: 1.2rem;
+            font-size: 1.6rem;
             line-height: 148.02%;
         }
     }
@@ -76,10 +77,10 @@ const Main = styled.div <PropMode>`
         .text {
             width: 80%;
             h1 {
-                font-size: 2.8rem;
+                font-size: 3rem;
             }
             p {
-                font-size: 1.8rem;
+                font-size: 2rem;
             }
         }
     }

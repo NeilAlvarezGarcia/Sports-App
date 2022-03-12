@@ -34,15 +34,14 @@ const Login = () => {
             setMessage('Check your email for further instructions');
             setEmail('');
             
-            setLoading(false);
             setTimeout(() => {
                 navigate('/login');
             }, 3000);
         } catch(err: any) {
             setError(err.message);
         }
-
         setLoading(false);
+
     }
 
     useEffect(() => {
@@ -65,7 +64,7 @@ const Login = () => {
                     User
                     <input type="email" id='email' value={email} onChange={handleChange} required/>
                 </label>
-                <p className='link'>Have already an account?<Link to='/login'> Login</Link></p>
+                <p className='link'>Have already an account?<Link to='/login' className='underline'> Login</Link></p>
 
                 <ButtonComponent type='submit' disabled={loading}>Send email</ButtonComponent>
             </form>

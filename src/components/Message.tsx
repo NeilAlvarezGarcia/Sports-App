@@ -20,5 +20,10 @@ const MessageComponent = styled.div `
     p {
         color: #fff !important;
     }
+
+    @media (min-width: 500px) {
+      width: 70%;
+      margin: 0 auto 2rem;
+    }
 `;
 export default Message

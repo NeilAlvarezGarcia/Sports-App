@@ -6,30 +6,35 @@ import BackButton from '../components/BackButton'
 import { ButtonComponent } from '../components/Button'
 import { PropMode } from '../components/Containers'
 import { ContainerCenter } from '../components/Containers'
+import { Error } from '../components/Error'
 import Message from '../components/Message'
 import { UseContext } from '../contextApi/ContextApi'
 import { updateUserProfile } from '../firebase-files/authentication'
-import { getExtraUserInformation, sendExtraUserInformation } from '../firebase-files/firestore'
+import { extraDataType, getExtraUserInformation, sendExtraUserInformation } from '../firebase-files/firestore'
 import { uploadImageProfile} from '../firebase-files/storage'
 
-interface typeForm {
-    email?: string,
-    password?: string,
-    passwordConfirmation?: string,
-    location?: string,
-    photoURL?: File
-    phoneNumber?: string,
-    name?: string
+interface FieldType {
+    value: string,
+    border: string
+    files?: File,
+    fileName?: string
 }
+
 export interface typeExtraData {
-    phoneNumber?: string,
-    location?: string,
+    phone?: FieldType,
+    location?: FieldType,
     userId?: string
 }
 export interface typeDataUpdate  {
-    displayName?: string,
-    photoURL?: string
+    name?: FieldType,
+    photo?: FieldType,
 }
+interface typeForm  extends typeExtraData, typeDataUpdate {
+    email?: FieldType
+    password?: FieldType,
+    passwordConfirmation?: FieldType,
+}
+
 
 const SignUp = () => {
     const {mode, user} = UseContext();
@@ -37,13 +42,24 @@ const SignUp = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
-    const [extraData, setExtraData] = useState<typeExtraData>();
-    const [formState, setFormState] = useState<typeForm>({});
+    const [error, setError] = useState<string>('');
+    const [extraData, setExtraData] = useState<extraDataType>();
+    const [formState, setFormState] = useState<typeForm>();
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {value, files, name} = e.target;
-        const newValue = name === 'photoURL' ? files?.[0] : value;
+        setError('');
+
+        const {name, value, files} = e.target;
+        const newValue = name === 'photo' ? {
+            value,
+            files: files?.[0],
+            fileName: files?.[0].name,
+            border: ''
+        } : {
+            value,
+            border: ''
+        };
 
         setFormState(prevState => ({
             ...prevState,
@@ -51,114 +67,230 @@ const SignUp = () => {
         }))
     }
 
+    const setBorder = (name: string, state: FieldType | undefined, border: string) => {
+        setFormState(prevState => ({
+            ...prevState,
+            [name]: {
+                ...state,
+                border
+            }
+        }));
+    }
+
+    const handleError = () => {
+        setLoading(false);
+        setError('Check the fields marked in red to update the profile');
+    }
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         setLoading(true);
 
-        let updateData: typeDataUpdate = {}
+        let validationText: string = '';
+        let emailValidated: string = '';
+        let passwordValidated: string = '';
+        let photoValidated: File | null = null;
+        let nameValidated: string = '';
         let updateExtraData: typeExtraData = {
             userId: user.uid
         }
-
-        if(formState.email) {
-            if(formState.email !== user.email) {
-                updateEmail(user, formState.email);
-            }
-        }
-        if(formState.password && formState.passwordConfirmation) {
-            if(formState.password === formState.passwordConfirmation) {
-                updatePassword(user, formState.password);
-            }
-        }
-        if(formState.photoURL) {
-            if(/\.(jpg|jpeg|png|svg)/g.test(formState.photoURL.name)) {
-                const path = `/files/${user.uid}/image-profile`;
-                uploadImageProfile(path, formState.photoURL);
-            }
-        }
-        if(formState.phoneNumber) {
-            if(/[0-9]{10}/.test(formState.phoneNumber)) {
-                updateExtraData.phoneNumber = formState.phoneNumber;
-            }
-        }
-        if(formState.name) {
-            if(/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(formState.name)) {
-                updateData.displayName = formState.name;
-                updateUserProfile(updateData);
-            }
-        }
-        if(formState.location) {
-            if(/^[a-zA-ZÀ-ÿ\s]{5,50}/.test(formState.location)) {
-                updateExtraData.location = formState.location;
-            }
+        const regex = {
+            name: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, 
+            password: /^.{4,12}$/, 
+            email: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+            photo: /\.(jpg|jpeg|png|svg)/g,
+            phone: /[0-9]{7,12}/,
+            location: /^[a-zA-ZÀ-ÿ\s]{5,50}/
         }
 
-        if(updateExtraData.location || updateExtraData.phoneNumber) {
+        if(formState?.email) {
+            if(formState.email.value !== user.email) {
+                if(regex.email.test(formState.email.value)) {
+                    emailValidated = formState.email.value;
+                    setBorder('email', formState.email, 'success');
+                    validationText = 'not error';
+                }  else {
+                    setBorder('email', formState.email, 'danger');
+                    validationText = 'error';
+                    handleError();
+                }
+            }
+        }
+        if(formState?.password && formState?.passwordConfirmation) {
+            if(formState.password.value === formState.passwordConfirmation.value) {
+                passwordValidated = formState.password.value;
+                setBorder('password', formState.passwordConfirmation, 'success');
+                setBorder('passwordConfirmation', formState.password, 'success');
+                validationText = 'not error';
+            } else {
+                setBorder('password', formState.passwordConfirmation, 'danger');
+                setBorder('passwordConfirmation', formState.password, 'danger');
+                validationText = 'error';
+                handleError();
+            }
+        }
+        if(formState?.password && !formState?.passwordConfirmation) {
+            setBorder('passwordConfirmation', formState.passwordConfirmation, 'danger');
+            handleError();
+            validationText = 'error';
+        } else if(!formState?.password && formState?.passwordConfirmation) {
+            setBorder('password', formState.password, 'danger');
+            handleError();
+            validationText = 'error';
+        }
+
+        if(formState?.photo) {
+            if(formState.photo.fileName && formState.photo.files && regex.photo.test(formState.photo.fileName)) {
+                photoValidated = formState.photo.files;
+                setBorder('photo', formState.photo, 'success');
+                validationText = 'not error';
+            }  else {
+                setBorder('photo', formState.photo, 'danger');
+                handleError();
+                validationText = 'error';
+            }
+        }
+        if(formState?.phone?.value) { 
+            if(formState.phone.value !== extraData?.phone) {
+                if(regex.phone.test(formState.phone.value)) {
+                    updateExtraData.phone = formState.phone;
+                    setBorder('phone', formState.phone, 'success');
+                    validationText = 'not error';
+                } else {
+                    setBorder('phone', formState.phone, 'danger');
+                    handleError();
+                    validationText = 'error';
+                }
+            }
+        }
+        if(formState?.name) {
+            if(formState.name.value !== displayName) { 
+                if(regex.name.test(formState.name.value)) {
+                    nameValidated = formState.name.value;
+                    setBorder('name', formState.name, 'success');
+                    validationText = 'not error';
+                } else {
+                    setBorder('name', formState.name, 'danger');
+                    handleError();
+                    validationText = 'error';
+                }
+            }
+        }
+        if(formState?.location?.value) {
+            if(formState.location.value !== extraData?.location) {
+                if(regex.location.test(formState.location.value)) {
+                    updateExtraData.location = formState.location;
+                    setBorder('location', formState.location, 'success');
+                    validationText = 'not error';
+                } else {
+                    setBorder('location', formState.location, 'danger');
+                    handleError();
+                    validationText = 'error';
+                }
+            }
+        }
+
+        if(validationText === 'error') return setLoading(false);
+        if(!validationText) return navigate('/home');
+
+
+
+        if(updateExtraData.location || updateExtraData.phone) {
             sendExtraUserInformation(user.uid, updateExtraData);
         }
+        if(emailValidated) {
+            updateEmail(user, emailValidated); 
+        }
+        if(passwordValidated) {
+            updatePassword(user, passwordValidated); 
+        }
+        if(photoValidated) {
+            const path = `/files/${user.uid}/image-profile`;
+            uploadImageProfile(path, photoValidated);
+        }
+        if(nameValidated) {
+            const dataUser = {
+                displayName: formState?.name?.value
+            }
+            updateUserProfile(dataUser);
+        }
 
-        setLoading(false);
         setMessage('Profile updated');
         const selectNavigation = () => window.innerWidth < 756 ? '/profile' : '/home';
-        setTimeout(() =>navigate(selectNavigation()), 3000);
+        setTimeout(() => {
+            navigate(selectNavigation())
+            setLoading(false);
+        }, 3000);
     }
 
     useEffect(() => {
         const setData = async () => {
-            await setExtraData(await getExtraUserInformation(user.uid));
+            setExtraData(await getExtraUserInformation(user.uid));
             setFormState({
-                email: email, 
-                name: displayName,
-                phoneNumber: extraData?.phoneNumber,
-                location: extraData?.location,
+                name: {
+                    value: displayName,
+                    border: ''
+                },
+                email: {
+                    value: email,
+                    border: ''
+                },
+                phone: {
+                    value: extraData?.phone ? extraData?.phone : '',
+                    border: ''
+                },
+                location: {
+                    value: extraData?.location ? extraData?.location : '',
+                    border: ''
+                }
             })
         }
         setData();
         document.title = 'GreenRun Sports - Edit Profile';
-    }, [displayName, email, extraData?.location, extraData?.phoneNumber, user])
+    }, [displayName, email, extraData?.location, extraData?.phone, user])
 
   return (
     <ContainerCenter>
         <ContainerUpdate mode={mode}>
             <div className='backButton'>
-                <BackButton/>
+                <BackButton route='/profile'/>
             </div>
             <div className="header">
                 <h1>Edit Profile</h1>
             </div>
 
             {message && <Message text={message}/>}
-                
+            {error && <Error>{error}</Error>}
             <form onSubmit={handleSubmit}>
-                <label htmlFor="photo">
+                <label className={formState?.photo?.border} htmlFor="photo">
                     Photo Profile
-                    <input type="file" id='photo' className='file' value='' onChange={handleChange} name='photoURL'/>
-                    <span>{formState?.photoURL?.name}</span>
+                    <input type="file" id='photo' className='file' value={formState?.photo?.value} onChange={handleChange} name='photo'/>
+                    <span>{formState?.photo?.fileName}</span>
                 </label>
-                <label htmlFor="name">
+                <label className={formState?.name?.border} htmlFor="name">
                     Name
-                    <input type="text" id='name' autoComplete='off' value={formState.name} onChange={handleChange} name='name'/>
+                    <input type="text" id='name' autoComplete='off' value={formState?.name?.value} onChange={handleChange} name='name'/>
                 </label>
-                <label htmlFor="email">
+                <label className={formState?.email?.border} htmlFor="email">
                     Email
-                    <input type="email" id='email' autoComplete='off' value={formState.email} onChange={handleChange} name='email'/>
+                    <input type="email" id='email' autoComplete='off' value={formState?.email?.value} onChange={handleChange} name='email'/>
                 </label>
-                <label htmlFor="phone">
+                <label className={formState?.phone?.border} htmlFor="phone">
                     Phone Number
-                    <input type="phone" id='phone' autoComplete='off' value={formState.phoneNumber} onChange={handleChange} name='phoneNumber'/>
+                    <input type="phone" id='phone' autoComplete='off' value={formState?.phone?.value} onChange={handleChange} name='phone'/>
                 </label>
-                <label htmlFor="location">
+                <label className={formState?.location?.border} htmlFor="location">
                     Location
-                    <input type="text" id='location' autoComplete='off' value={formState.location} onChange={handleChange} name='location'/>
+                    <input type="text" id='location' autoComplete='off' value={formState?.location?.value} onChange={handleChange} name='location'/>
                 </label>
-                <label htmlFor="password">
+                <label className={formState?.password?.border} htmlFor="password">
                     Password
-                    <input type="password" id='password' placeholder='Leave them blank to keep the same password' value={formState.password} onChange={handleChange} name='password'/>
+                    <input type="password" id='password' placeholder='Leave them blank to keep the same password' value={formState?.password?.value} onChange={handleChange} name='password'/>
                 </label>
-                <label htmlFor="passwordConfirm">
+                <label className={formState?.passwordConfirmation?.border} htmlFor="passwordConfirm">
                     Verify Password
-                    <input type="password" id='passwordConfirm' placeholder='Leave them blank to keep the same password' value={formState.passwordConfirmation} onChange={handleChange} name='passwordConfirmation'/>
+                    <input type="password" id='passwordConfirm' placeholder='Leave them blank to keep the same password' value={formState?.passwordConfirmation?.value} onChange={handleChange} name='passwordConfirmation'/>
                 </label>
                 <ButtonComponent type='submit' disabled={loading}>Edit Profile</ButtonComponent>
             </form>
@@ -168,7 +300,7 @@ const SignUp = () => {
 }
 
 const ContainerUpdate = styled.div<PropMode>`
-    width: min(95%, 50rem);
+    width: 95%;
     max-height: 100%;
     
     .header {
@@ -191,6 +323,11 @@ const ContainerUpdate = styled.div<PropMode>`
         margin-bottom: 1rem;
         border-radius: 1rem;
         font-size: 1.3rem;
+        border: thin solid transparent;
+
+        &:first-of-type {
+            cursor: pointer;
+        }
         &:last-of-type {
             margin-bottom: 1.5rem;
         }
@@ -214,15 +351,36 @@ const ContainerUpdate = styled.div<PropMode>`
         .file {
             display: none;
         }
-
+    }
+    .success {
+        border: thin solid #37BC14;
+    }
+    .danger {
+        border: thin solid #F4574B;
     }
     form {
         height: 100rem;
-        overflow: auto;
+        overflow-y: auto;
         padding-bottom: 70rem;
     }
 
     @media (min-width: 756px) {
+        label {
+            height: 6rem;
+            padding: 1rem 2rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            span {
+                font-size: 1.8rem;
+            }
+            input {
+                font-size: 1.8rem;
+            }
+        }
+        form {
+            min-width: 120%;
+            padding: 0 2rem 70rem;
+        }
         .backButton {
             display: none;
         }

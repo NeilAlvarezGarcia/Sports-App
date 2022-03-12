@@ -10,9 +10,18 @@ export const ButtonComponent = styled.button`
   outline: none;
   cursor: pointer;
   color: #fff !important;
+  transition: all ease .3s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
   
   @media (min-width: 380px) {
+    border-radius: 2rem;
+  }
+  @media (min-width: 756px) {
     width: 12.2rem;
+    padding: 2rem 0;
     border-radius: 2rem;
   }
 `;

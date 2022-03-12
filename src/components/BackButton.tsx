@@ -6,11 +6,11 @@ import styled from 'styled-components'
 import { PropMode } from './Containers'
 import { UseContext } from '../contextApi/ContextApi'
 
-const BackButton = () => {
+const BackButton = ({route}: {route?: string}) => {
   const {mode} = UseContext();
 
   return (
-    <ArrowButton to='/home' mode={mode}>
+    <ArrowButton to={route ? route : '/home'} mode={mode}>
         <FontAwesomeIcon icon={faArrowLeft}/>   
     </ArrowButton>
   )
@@ -18,10 +18,10 @@ const BackButton = () => {
 
 const ArrowButton = styled(Link)<PropMode>`
   color: ${prop => prop.mode === 'light' ? '#232232' : '#fff'};
-  font-size: 2rem;
+  font-size: 2.6rem;
   
   @media (min-width: 500px) {
-    font-size: 3rem;
+    font-size: 3.4rem;
   }
 `;
 

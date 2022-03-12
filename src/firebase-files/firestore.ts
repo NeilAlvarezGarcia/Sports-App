@@ -6,13 +6,30 @@ const db = getFirestore();
 const extraUser = 'extraUser';
 const sports = 'sports';
 
+export interface extraDataType {
+    location?: string,
+    phone?: string,
+    userId?: string
+}
+
 export async function sendExtraUserInformation(id:string, data: typeExtraData) {
     try {
         const res = await getExtraUserInformation(id);
 
+        let dataToSend: extraDataType = {
+            userId: data.userId ? data.userId : ''
+        }
+
+        if(data.location) {
+            dataToSend.location = data.location.value;
+        } 
+        if(data.phone) {
+            dataToSend.phone = data.phone.value;
+        }
+
         const newData = {
             ...res,
-            ...data
+            ...dataToSend
         }
 
         const userRef = doc(db, extraUser, id);
@@ -23,7 +40,7 @@ export async function sendExtraUserInformation(id:string, data: typeExtraData) {
 }
 export async function getExtraUserInformation(id: string) {
     const q = query(collection(db, extraUser), where("userId", "==", id));
-    let extraData: typeExtraData = {}
+    let extraData: extraDataType = {}
         
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {

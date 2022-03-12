@@ -25,7 +25,7 @@ const Button = styled.button<PropMode>`
     border: none;
     top: 1.5rem;
     left: 1.5rem;
-    z-index: 3;
+    z-index: 15;
     width: 4.5rem;
     height: 4.5rem;
     cursor: pointer;

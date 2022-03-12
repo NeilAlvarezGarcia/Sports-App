@@ -1,14 +1,18 @@
 import { faHeart, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { FC } from 'react'
+import axios from 'axios'
+import React, { FC, useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { UseContext } from '../contextApi/ContextApi'
 import { storeSports } from '../firebase-files/firestore'
-import { typeSportData } from '../Home/Home'
+import { typeLikedCard, typeSportData } from '../Home/Home'
 import { PropMode } from './Containers'
+import IconAnimated from './IconAnimated'
 
 interface Prop {
-  sport: typeSportData
+  sport: typeSportData,
+  setLikeCard: React.Dispatch<typeLikedCard>, 
 }
 
 export interface SportSelected {
@@ -19,8 +23,12 @@ export interface SportSelected {
   createdAt?: any
 }
 
-const Card: FC<Prop> = ({sport}) => {
+const Card: FC<Prop> = ({sport, setLikeCard}) => {
+  const {pathname} = useLocation();
+  const randomNumber = useMemo(() => Math.floor(Math.random() * 5), [pathname]);
   const {mode, user} = UseContext();
+  const [liked, setLiked] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
 
   const handleClick = async (type: string) => {
     const {strSport, strSportThumb, idSport} = sport;
@@ -32,8 +40,37 @@ const Card: FC<Prop> = ({sport}) => {
       strSportThumb, 
     }
 
+    if(type === 'like') {
+      setLikeCard({
+        liked: true,
+        image: images[randomNumber]
+      })
+      setLiked(true);
+      
+      
+      setTimeout(() => {
+        setLikeCard({
+          liked: false,
+          image: ''
+        })
+        setLiked(false);
+      }, 2100);
+    }
+
     await storeSports(user.uid, sportReacted);
   }
+
+  useEffect(() => {
+    axios.get(`https://pixabay.com/api/?key=21036208-560fd16570d6cd9d464a82eef&q=${sport.strSport}&per_page=5&image_type=photo`)
+      .then(res => {
+        const newImages: string[] = [];
+
+        res.data.hits.forEach((data: any) => newImages.push(data.largeImageURL))
+
+        setImages(newImages);
+      })
+
+  }, [sport]);
 
   return (
     <ContainerCard mode={mode}>
@@ -42,8 +79,12 @@ const Card: FC<Prop> = ({sport}) => {
       </div>
 
       <div className="container-image">
-        <img src={sport.strSportThumb} alt={sport.strSport}/>
+        <img src={images.length > 0 ? images[randomNumber] : sport.strSportThumb} alt={sport.strSport}/>
         <h2>{sport.strSport}</h2>
+        
+        <div className="liked-card">
+          {liked && <IconAnimated/>}
+        </div>
       </div>
 
       <div className="container-buttons">
@@ -59,7 +100,7 @@ const Card: FC<Prop> = ({sport}) => {
 }
 
 const ContainerCard = styled.div<PropMode>`
-  min-height: 100%;
+  min-width: 100%;
   position: relative;
   scroll-snap-align:  center;
   scroll-snap-stop: always;
@@ -90,24 +131,29 @@ const ContainerCard = styled.div<PropMode>`
     position: relative;
     overflow: hidden;
     border-radius: 0 0 3rem 3rem;
+    cursor: pointer;
 
     img {
       min-width: 100%;
       min-height: 100%;
-      object-fit: contain;
+      object-fit: cover;
     }
 
     h2 {
       color: #fff;
-      font-size: 3rem;
       position: absolute;
       height: 22%;
-      line-height: 3.2;
+      line-height: 4.2;
       width: 100%;
       bottom: 0;
       left: 0;
       padding-left: 5%;
       background: linear-gradient(to top, #000 45%, transparent);
+    }
+
+    .liked-card {
+      display: none;
+
     }
   }
 
@@ -120,6 +166,11 @@ const ContainerCard = styled.div<PropMode>`
 
     button {
       border-radius: 50%;
+      transition: ease all .3s;
+
+      &:hover {
+        transform: scale(1.07);
+      }
     }
 
     .dislike {
@@ -138,6 +189,31 @@ const ContainerCard = styled.div<PropMode>`
       color: #fff;
       font-size: 3rem;
     }
+  }
+
+  @media (min-width: 600px) {
+    box-shadow: 0 0 15px rgba(0, 0, 0, .3);
+    border-radius: 1.5rem;
+    
+    .container-image {
+      h2 {
+        font-size: 3rem;
+        height: 24%;
+      }
+
+      .liked-card {
+        display: flex;
+      }
+    }
+  }
+  @media (min-width: 800px) {
+    scroll-snap-align: top;
+    height: 50rem;
+    overflow: hidden;
+    margin-top: 5rem;
+  }
+  @media (min-width: 1100px) {
+    height: 55rem;
   }
 `;
 
