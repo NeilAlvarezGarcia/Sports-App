@@ -1,8 +1,8 @@
 import { faHeart, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from 'axios'
-import React, { FC, useEffect, useMemo, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import React, { FC, useEffect,useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { UseContext } from '../contextApi/ContextApi'
 import { storeSports } from '../firebase-files/firestore'
@@ -24,12 +24,11 @@ export interface SportSelected {
 }
 
 const Card: FC<Prop> = ({sport, setLikeCard}) => {
-  const {pathname} = useLocation();
-  const randomNumber = useMemo(() => Math.floor(Math.random() * 5), [pathname]);
   const {mode, user} = UseContext();
+  const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
-  const [images, setImages] = useState<string[]>([]);
-
+  const [image, setImage] = useState<string>('');
+  
   const handleClick = async (type: string) => {
     const {strSport, strSportThumb, idSport} = sport;
 
@@ -43,7 +42,7 @@ const Card: FC<Prop> = ({sport, setLikeCard}) => {
     if(type === 'like') {
       setLikeCard({
         liked: true,
-        image: images[randomNumber]
+        image: image
       })
       setLiked(true);
       
@@ -67,7 +66,12 @@ const Card: FC<Prop> = ({sport, setLikeCard}) => {
 
         res.data.hits.forEach((data: any) => newImages.push(data.largeImageURL))
 
-        setImages(newImages);
+        if(!newImages.length) return setImage(sport.strSportThumb);
+        const newImage = newImages[Math.floor(Math.random() * newImages.length)];
+        
+        if(!newImage) setImage(sport.strSportThumb);
+
+        setImage(newImage);
       })
 
   }, [sport]);
@@ -78,8 +82,8 @@ const Card: FC<Prop> = ({sport, setLikeCard}) => {
         <img src={sport.strSportIconGreen} alt={sport.strSport}/>  
       </div>
 
-      <div className="container-image">
-        <img src={images.length > 0 ? images[randomNumber] : sport.strSportThumb} alt={sport.strSport}/>
+      <div className="container-image" onClick={() => navigate(`/list/${sport.strSport}`)}>
+        <img src={image} alt={sport.strSport}/>
         <h2>{sport.strSport}</h2>
         
         <div className="liked-card">
@@ -149,6 +153,7 @@ const ContainerCard = styled.div<PropMode>`
       left: 0;
       padding-left: 5%;
       background: linear-gradient(to top, #000 45%, transparent);
+      user-select: none;
     }
 
     .liked-card {
@@ -200,7 +205,7 @@ const ContainerCard = styled.div<PropMode>`
         font-size: 3rem;
         height: 24%;
       }
-
+      
       .liked-card {
         display: flex;
       }
@@ -210,10 +215,10 @@ const ContainerCard = styled.div<PropMode>`
     scroll-snap-align: top;
     height: 50rem;
     overflow: hidden;
-    margin-top: 5rem;
+    margin: 7rem 0;
   }
   @media (min-width: 1100px) {
-    height: 55rem;
+    height: 60rem;
   }
 `;
 

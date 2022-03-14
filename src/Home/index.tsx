@@ -11,7 +11,7 @@ const Index = () => {
     <Routes>
         <Route path='home' element={<Home/>}/>
         <Route path='history' element={<History/>}/>
-        <Route path='list' element={<List/>}/>
+        <Route path='list/*' element={<List/>}/>
         <Route path='profile' element={<Profile/>}/>
         <Route path='update-profile' element={<RenderUpdateProfile/>}/>
     </Routes>

@@ -49,6 +49,7 @@ const CardContainer = styled.div<Type>`
 
         img {
             min-width: 100%;
+            min-height: 100%;
         }
 
         .text {
@@ -71,6 +72,15 @@ const CardContainer = styled.div<Type>`
         justify-content: center;
         font-size: 2rem;
         color: ${prop => prop.type === 'like' ? prop.mode === 'light' ? '#2067F8' : '#fff' : '#EA596F'};
+    }
+
+    @media (min-width: 340px) {
+        min-height: 7rem;
+        max-height: 7rem;
+    }
+    @media (min-width: 450px) {
+        min-height: 8rem;
+        max-height: 8rem;
     }
 `;
 export default CardHistory

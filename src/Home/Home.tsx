@@ -98,6 +98,7 @@ export const ContainerHome = styled.div`
 
   .cards {
     scroll-snap-type: x mandatory;
+    scrollbar-width: 0 !important;
   }
   .like-card {
     position: fixed;
@@ -165,6 +166,7 @@ export const ContainerHome = styled.div`
   
   @media (min-width: 600px) {
     flex-direction: row-reverse;
+    align-items: center;
     gap: 4rem;
     
     .top-container {

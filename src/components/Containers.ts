@@ -70,11 +70,11 @@ export const ContainerSecondary = styled.div`
         text-align: center;
 
         h1 {
-            font-size: 3.2rem;
+            font-size: 3.4rem;
             margin: 1rem 0;
         }
         p {
-            font-size: 1.4rem;
+            font-size: 1.7rem;
             line-height: 148.02%;
             padding: 0 2rem;
             margin-bottom: 2rem;
@@ -88,10 +88,10 @@ export const ContainerSecondary = styled.div`
     @media (min-width: 380px) {
         .header {
             h1 {
-                font-size: 3.5rem;
+                font-size: 3.6rem;
             }
             p {
-                font-size: 1.8rem;
+                font-size: 1.9rem;
                 padding: 0  4rem;
             }
         }
