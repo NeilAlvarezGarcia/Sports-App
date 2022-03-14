@@ -30,7 +30,7 @@ const SignUp = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const regexPassword = /^.{4,12}$/;
+        const regexPassword = /^.{8,20}$/;
 
         if(!regexPassword.test(formState.passwordConfirmation)) {
             return setError('Length of the password wrong');

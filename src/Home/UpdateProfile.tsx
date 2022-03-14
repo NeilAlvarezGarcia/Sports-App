@@ -97,7 +97,7 @@ const SignUp = () => {
         }
         const regex = {
             name: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, 
-            password: /^.{4,12}$/, 
+            password: /^.{8,20}$/, 
             email: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
             photo: /\.(jpg|jpeg|png|svg)/g,
             phone: /[0-9]{7,12}/,
