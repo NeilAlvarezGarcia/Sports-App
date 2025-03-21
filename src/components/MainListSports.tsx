@@ -1,16 +1,16 @@
 import { faHeart, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { UseContext } from '../contextApi/ContextApi';
-import { getSports } from '../firebase-files/firestore';
+import { getSports } from '../firebase/firestore';
 import CardHistory from './CardHistory';
 import { SportSelected } from './CardHome';
 import { PropMode } from './Containers';
 
 const MainListSports = () => {
-  const {user, mode} = UseContext();
+  const { user, mode } = UseContext();
   const [historyData, setHistoryData] = useState<SportSelected[]>([]);
   const [noData, setNoData] = useState(false);
 
@@ -20,34 +20,35 @@ const MainListSports = () => {
 
     const filteredData = res.filter((data: SportSelected) => data.type === type);
 
-    if(filteredData.length === 0) return setNoData(true);
+    if (filteredData.length === 0) return setNoData(true);
 
     setHistoryData(filteredData);
-  };   
+  };
   return (
-    <MainListContainer mode={mode}> 
-        <p>Check sports and the teams of the diferents countries.</p> 
-        <div className='buttons'>
-            <button className="likes" onClick={() => fetchSportData('like')}>
-                Likes Sports <FontAwesomeIcon icon={faHeart} className='icon'/>
-            </button>
-            <button className="dislikes" onClick={() => fetchSportData('dislike')}>
-                Dislikes Sports <FontAwesomeIcon icon={faTimes} className='icon'/>
-            </button>
-        </div>
-        { noData && <p className='center'>There´s nothing to show</p>}
-        <div className="list-reacted-cards">
-          { historyData.length > 0 && historyData.map(data => (
+    <MainListContainer mode={mode}>
+      <p>Check sports and the teams of the diferents countries.</p>
+      <div className='buttons'>
+        <button className='likes' onClick={() => fetchSportData('like')}>
+          Likes Sports <FontAwesomeIcon icon={faHeart} className='icon' />
+        </button>
+        <button className='dislikes' onClick={() => fetchSportData('dislike')}>
+          Dislikes Sports <FontAwesomeIcon icon={faTimes} className='icon' />
+        </button>
+      </div>
+      {noData && <p className='center'>There´s nothing to show</p>}
+      <div className='list-reacted-cards'>
+        {historyData.length > 0 &&
+          historyData.map((data) => (
             <Link to={`${data.strSport}`} key={data.idSport}>
-              <CardHistory data={data}/>
+              <CardHistory data={data} />
             </Link>
           ))}
-        </div>
+      </div>
     </MainListContainer>
-  )
-}
+  );
+};
 
-const MainListContainer = styled.div<PropMode>`
+const MainListContainer = styled('div')<PropMode>`
   .center {
     text-align: center;
     margin-top: 3rem;
@@ -73,10 +74,10 @@ const MainListContainer = styled.div<PropMode>`
       width: 100%;
       padding: 1rem 1.5rem;
       border-radius: 1rem;
-      background-color: ${prop => prop.mode === 'light'? '#fff' : '#2C2B3E'};
-      color: ${prop => prop.mode === 'light'? '#181828' : '#fff'};
+      background-color: ${(prop) => (prop.mode === 'light' ? '#fff' : '#2C2B3E')};
+      color: ${(prop) => (prop.mode === 'light' ? '#181828' : '#fff')};
       .icon {
-          color: #F4574B;
+        color: #f4574b;
       }
     }
   }
@@ -85,7 +86,7 @@ const MainListContainer = styled.div<PropMode>`
       height: 27rem;
     }
     .buttons {
-        flex-direction: row;
+      flex-direction: row;
     }
   }
   @media (min-width: 600px) {
@@ -109,4 +110,4 @@ const MainListContainer = styled.div<PropMode>`
   }
 `;
 
-export default MainListSports
+export default MainListSports;

@@ -1,4 +1,4 @@
-import React, {  useEffect } from 'react'
+import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import BackButton from '../components/BackButton';
@@ -9,30 +9,30 @@ import Teams from '../components/Teams';
 const History = () => {
   useEffect(() => {
     document.title = 'GreenRun Sports - Lists';
-  }, [])
+  }, []);
 
   return (
     <ConatainerList>
       <div className='top'>
-        <BackButton/>
+        <BackButton />
 
-        <div className="history-title">
+        <div className='history-title'>
           <h1>Sport List</h1>
         </div>
-        
+
         <Routes>
-          <Route index element={<MainListSports/>}/>
-          <Route path=':sport' element={<Teams/>}/>
+          <Route index element={<MainListSports />} />
+          <Route path=':sport' element={<Teams />} />
         </Routes>
       </div>
-      <div className="container-navbar">
-        <NavBar/>
+      <div className='container-navbar'>
+        <NavBar />
       </div>
     </ConatainerList>
-  )
-}
+  );
+};
 
-const ConatainerList = styled.div`
+const ConatainerList = styled('div')`
   display: flex;
   flex-direction: column;
   width: 88%;
@@ -47,7 +47,7 @@ const ConatainerList = styled.div`
   }
 
   h1 {
-        margin: 1.5rem 0 1rem;
+    margin: 1.5rem 0 1rem;
   }
 
   nav {
@@ -71,13 +71,10 @@ const ConatainerList = styled.div`
     nav {
       height: 38.6rem;
       padding: 2rem 1.7rem;
-      margin-left: -.3rem;
+      margin-left: -0.3rem;
       margin-top: -1.7rem;
     }
   }
 `;
 
-
-
-
-export default History
+export default History;

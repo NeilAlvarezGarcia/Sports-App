@@ -1,37 +1,37 @@
-import { onAuthStateChanged } from 'firebase/auth'
-import React, { createContext, FC, useContext, useEffect, useState } from 'react'
-import { auth } from '../firebase-files/authentication'
+import { onAuthStateChanged } from 'firebase/auth';
+import React, { createContext, FC, useContext, useEffect, useState } from 'react';
+import { auth } from '../firebase/authentication';
 
 // prop children type
 type Prop = {
-  children: JSX.Element
-}
+  children: JSX.Element;
+};
 
 // AppState type
 type AppState = {
-  mode: string,
-  changeMode: (mode: string) => void,
-  user: any,
-  setUser: React.Dispatch<any>
-}
+  mode: string;
+  changeMode: (mode: string) => void;
+  user: any;
+  setUser: React.Dispatch<any>;
+};
 
-const intialState:AppState = {
+const intialState: AppState = {
   mode: '',
   changeMode: (mode: string) => {},
   user: null,
-  setUser: () => {}
-}
+  setUser: () => {},
+};
 
 const context = createContext<AppState>(intialState);
 
-const getMode = ():string => {
+const getMode = (): string => {
   const mode = localStorage.getItem('mode');
 
-  if(mode) return mode;
+  if (mode) return mode;
   else return 'light';
-}
+};
 
-const ContextApi: FC<Prop> = ({children}) => {
+const ContextApi: FC<Prop> = ({ children }) => {
   const [mode, setMode] = useState<string>(getMode());
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<any>(null);
@@ -40,14 +40,14 @@ const ContextApi: FC<Prop> = ({children}) => {
     localStorage.setItem('mode', mode);
 
     setMode(mode);
-  }
+  };
 
   const value = {
     mode,
     changeMode,
     user,
-    setUser
-  }
+    setUser,
+  };
 
   useEffect(() => {
     return onAuthStateChanged(auth, (user) => {
@@ -56,19 +56,11 @@ const ContextApi: FC<Prop> = ({children}) => {
     });
   }, []);
 
-  return (
-    <context.Provider value={value}>
-      {!loading && 
-        <>
-          {children}
-        </>
-      }
-    </context.Provider>
-  )
-}
+  return <context.Provider value={value}>{!loading && <>{children}</>}</context.Provider>;
+};
 
 export const UseContext = () => {
   return useContext(context);
-}
+};
 
 export default ContextApi;

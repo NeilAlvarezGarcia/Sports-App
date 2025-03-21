@@ -1,29 +1,29 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 
-const Message = ({text}: {text: string}) => {
+const Message = ({ text }: { text: string }) => {
   return (
     <MessageComponent>
-        <p>{text}</p>
+      <p>{text}</p>
     </MessageComponent>
-  )
-}
+  );
+};
 
-const MessageComponent = styled.div `
-    padding: 1.5rem 0;
-    color: #fff;
-    background-color: #37BC14;
-    text-align: center;
-    border-radius: 1rem;
-    margin-bottom: 2rem;
+const MessageComponent = styled('div')`
+  padding: 1.5rem 0;
+  color: #fff;
+  background-color: #37bc14;
+  text-align: center;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
 
-    p {
-        color: #fff !important;
-    }
+  p {
+    color: #fff !important;
+  }
 
-    @media (min-width: 500px) {
-      width: 70%;
-      margin: 0 auto 2rem;
-    }
+  @media (min-width: 500px) {
+    width: 70%;
+    margin: 0 auto 2rem;
+  }
 `;
-export default Message
+export default Message;

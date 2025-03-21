@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import styled, { keyframes } from 'styled-components'
-import Card from '../components/CardHome'
-import { ContainerCards } from '../components/Containers'
-import ModeButton from '../components/ModeButton'
-import NavBar from '../components/NavBar'
+import React, { useEffect, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
+import Card from '../components/CardHome';
+import { ContainerCards } from '../components/Containers';
+import ModeButton from '../components/ModeButton';
+import NavBar from '../components/NavBar';
 import axios from 'axios';
-import IconAnimated from '../components/IconAnimated'
+import IconAnimated from '../components/IconAnimated';
 
 export interface typeSportData {
-  idSport: string,
-  strSport: string,
-  strFormat: string,
-  strSportThumb: string,
-  strSportIconGreen: string,
-  strSportDescription: string
+  idSport: string;
+  strSport: string;
+  strFormat: string;
+  strSportThumb: string;
+  strSportIconGreen: string;
+  strSportDescription: string;
 }
 
 export interface typeLikedCard {
@@ -25,7 +25,7 @@ const Home = () => {
   const [sports, setSports] = useState<typeSportData[]>([]);
   const [likeCard, setLikeCard] = useState<typeLikedCard>({
     liked: false,
-    image: ''
+    image: '',
   });
 
   const fetchSportData = async () => {
@@ -35,38 +35,38 @@ const Home = () => {
       const res = await axios.get(URL);
 
       setSports(res.data.sports);
-    } catch(err) {
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   useEffect(() => {
     fetchSportData();
 
     document.title = 'GreenRun Sports - Home';
-  }, [])
+  }, []);
 
   return (
     <ContainerHome>
-        <ModeButton/>
-        {likeCard.liked && (
-            <div className="like-card">
-                <img src={likeCard.image} alt="liked-card"/>
+      <ModeButton />
+      {likeCard.liked && (
+        <div className='like-card'>
+          <img src={likeCard.image} alt='liked-card' />
 
-                <IconAnimated/>
-            </div>
-          )}
-        <div className="top-container">
-          <ContainerCards className='cards'>
-            {sports.map(sport => (
-                <Card key={sport.idSport} sport={sport} setLikeCard={setLikeCard}/>
-            ))}
-          </ContainerCards>
+          <IconAnimated />
         </div>
-        <NavBar/>
+      )}
+      <div className='top-container'>
+        <ContainerCards className='cards'>
+          {sports.map((sport) => (
+            <Card key={sport.idSport} sport={sport} setLikeCard={setLikeCard} />
+          ))}
+        </ContainerCards>
+      </div>
+      <NavBar />
     </ContainerHome>
-  )
-}
+  );
+};
 
 const showCard = keyframes`
   10% {transform: scale(1)}
@@ -83,7 +83,7 @@ const showCard = keyframes`
   100% {transform: scale(0)}
 `;
 
-export const ContainerHome = styled.div`
+export const ContainerHome = styled('div')`
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -108,7 +108,7 @@ export const ContainerHome = styled.div`
     right: 0;
     bottom: 0;
     background-color: red;
-    transition: ease all .3s;
+    transition: ease all 0.3s;
     transform: scale(0);
     animation: ${showCard} 2s ease;
 
@@ -130,10 +130,16 @@ export const ContainerHome = styled.div`
       background-color: rgba(24, 24, 40, 0.24);
       transition: inherit;
       transform: inherit;
-      
-      @media (min-width: 320px) {left: 27%;}
-      @media (min-width: 400px) {left: 30%;}
-      @media (min-width: 500px) {left: 35%;}
+
+      @media (min-width: 320px) {
+        left: 27%;
+      }
+      @media (min-width: 400px) {
+        left: 30%;
+      }
+      @media (min-width: 500px) {
+        left: 35%;
+      }
 
       .second-level {
         width: 10rem;
@@ -147,7 +153,7 @@ export const ContainerHome = styled.div`
         transform: inherit;
 
         .like {
-          background: linear-gradient(125.02deg, #236BFE -17.11%, #063BA8 98.58%);
+          background: linear-gradient(125.02deg, #236bfe -17.11%, #063ba8 98.58%);
           box-shadow: 0px 10px 25px rgba(35, 107, 254, 0.2);
           width: 6rem;
           height: 6rem;
@@ -161,14 +167,11 @@ export const ContainerHome = styled.div`
     }
   }
 
-  
-
-  
   @media (min-width: 600px) {
     flex-direction: row-reverse;
     align-items: center;
     gap: 4rem;
-    
+
     .top-container {
       height: 100%;
     }
@@ -191,8 +194,6 @@ export const ContainerHome = styled.div`
       padding-bottom: 4rem;
     }
   }
-
-  
 `;
 
-export default Home
+export default Home;

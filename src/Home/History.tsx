@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import BackButton from '../components/BackButton';
 import CardHistory from '../components/CardHistory';
 import { SportSelected } from '../components/CardHome';
 import NavBar from '../components/NavBar';
 import { UseContext } from '../contextApi/ContextApi';
-import { getSports } from '../firebase-files/firestore';
+import { getSports } from '../firebase/firestore';
 
 const History = () => {
-  const {user} = UseContext();
+  const { user } = UseContext();
   const [historyData, setHistoryData] = useState<SportSelected[]>([]);
 
   const fetchSportData = useCallback(async () => {
@@ -16,46 +16,46 @@ const History = () => {
   }, [user]);
 
   const lastUpdate = () => {
-    if(historyData.length) {
+    if (historyData.length) {
       const createdAt = historyData[0].createdAt?.toDate();
       const [, month, day] = `${createdAt}`.split(' ');
       return `${day} ${month}`;
-    } 
+    }
     return null;
-  }
+  };
 
   useEffect(() => {
     fetchSportData();
 
     document.title = 'GreenRun Sports - History';
-  }, [fetchSportData])
+  }, [fetchSportData]);
 
   return (
     <ConatainerHistory>
       <div className='top'>
-        <BackButton/>
+        <BackButton />
 
-        <div className="history-title">
+        <div className='history-title'>
           <h1>History</h1>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
         </div>
         <p className='lastUpdate'>{lastUpdate()}</p>
-        <div className="historycards">
-          {historyData.length > 0 ? historyData.map(data => (
-            <CardHistory key={data.idSport} data={data}/>
-          )): (
+        <div className='historycards'>
+          {historyData.length > 0 ? (
+            historyData.map((data) => <CardHistory key={data.idSport} data={data} />)
+          ) : (
             <p>There´s no history yet</p>
           )}
         </div>
       </div>
-      <div className="container-navbar">
-        <NavBar/>
+      <div className='container-navbar'>
+        <NavBar />
       </div>
     </ConatainerHistory>
-  )
-}
+  );
+};
 
-const ConatainerHistory = styled.div`
+const ConatainerHistory = styled('div')`
   display: flex;
   flex-direction: column;
   width: 88%;
@@ -70,7 +70,7 @@ const ConatainerHistory = styled.div`
   }
 
   h1 {
-        margin: 1.5rem 0 1rem;
+    margin: 1.5rem 0 1rem;
   }
 
   .lastUpdate {
@@ -107,7 +107,7 @@ const ConatainerHistory = styled.div`
     width: 100%;
     height: 100%;
     gap: 4rem;
-    
+
     .historycards {
       padding-right: 2rem;
       grid-template-rows: 8rem;
@@ -122,7 +122,7 @@ const ConatainerHistory = styled.div`
     nav {
       height: 38.6rem;
       padding: 2rem 1.7rem;
-      margin-left: -.3rem;
+      margin-left: -0.3rem;
       margin-top: -1.7rem;
     }
   }
@@ -134,7 +134,4 @@ const ConatainerHistory = styled.div`
   }
 `;
 
-
-
-
-export default History
+export default History;
